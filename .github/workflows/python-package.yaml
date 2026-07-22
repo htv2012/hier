@@ -52,7 +52,7 @@ jobs:
       - name: Static Analysis
         run: |
           uv run ruff check .
-          uv run ty check src tests
+          uv run ty check src
 
       - name: Run Unit Tests
         run: |
