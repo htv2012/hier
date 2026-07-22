@@ -41,8 +41,8 @@ rename:
 
 ### Run the project
 run: lint
-	PYTHONBREAKPOINT="pudb.set_trace" uv run xyz
-	PYTHONBREAKPOINT="pudb.set_trace" uv run xyz --version
+	PYTHONBREAKPOINT="pudb.set_trace" uv run hier
+	PYTHONBREAKPOINT="pudb.set_trace" uv run hier --version
 
 ### Run unit tests
 test: lint

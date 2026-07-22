@@ -1,0 +1,22 @@
+[About]
+Name = "Ken's Books"
+
+[[About.Employees]]
+Name = "Ken Ellis"
+Position = "Owner"
+
+[[About.Employees]]
+Name = "Anna Kass"
+Position = "Sale"
+
+[[Inventory]]
+Description = "Sans Famile"
+[Inventory.SKU]
+id = "FIC001"
+in_stock = 45
+
+[[Inventory]]
+Description = "Drop Your Worries"
+[Inventory.SKU]
+id = "SELF109"
+in_stock = 120

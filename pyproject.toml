@@ -1,18 +1,16 @@
 [project]
-name = "xyz"
-version = "0.1.0"
-description = "Add your description here"
+name = "hier"
+version = "1.1.0"
+description = "Display data in hierarchical format"
 readme = "README.md"
 authors = [
     { name = "Hai Vu", email = "haivu2004@gmail.com" }
 ]
 requires-python = ">=3.13"
-dependencies = [
-    "click>=8.1.8",
-]
+dependencies = []
 
 [project.scripts]
-xyz = "xyz:main"
+hier = "hier.__main__:main"
 
 
 [build-system]
@@ -23,7 +21,6 @@ build-backend = "uv_build"
 dev = [
     "ipython>=8.32.0",
     "jupyterlab>=4.3.5",
-    "pudb>=2024.1.3",
     "pytest>=8.3.5",
     "pytest-cov>=6.1.1",
     "python-dotenv>=1.0.1",
