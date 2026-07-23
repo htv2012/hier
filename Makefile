@@ -27,9 +27,10 @@ lab:
 
 ### Perform static analysis
 lint:
-	uv tool run ruff check --select I --fix .
-	uv tool run ruff format .
-	uv tool run ruff check . --fix
+	uv run ruff check --select I --fix src test
+	uv run ruff format src test
+	uv run ruff check src test --fix
+	uv run ty check src test
 
 ### Open a Python shell
 py:
