@@ -6,11 +6,7 @@ About:
     - Name: Anna Kass
       Position: Sale
 Inventory:
-  - SKU:
-      id: FIC001
-      in_stock: 45
+  - SKU: FIC001
     Description: Sans Famile
-  - SKU:
-      id: SELF109
-      in_stock: 120
+  - SKU: SELF109
     Description: Drop Your Worries

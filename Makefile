@@ -1,6 +1,7 @@
 .PHONY: \
 	all \
 	clean \
+	edit \
 	install \
 	lab \
 	lint \
@@ -11,6 +12,10 @@
 
 ### Default target(s)
 all: test run
+
+### Edit files
+edit:
+	gvim -p Makefile pyproject.toml *.txt .github/workflows/*.yaml samples/* src/hier/*.py
 
 ### Clean up generated files
 clean:
@@ -40,12 +45,20 @@ py:
 rename:
 	uv run etc/set_project_name.py
 
-### Run the project
-run: lint
-	PYTHONBREAKPOINT="pudb.set_trace" uv run hier
-	PYTHONBREAKPOINT="pudb.set_trace" uv run hier --version
-
 ### Run unit tests
 test: lint
 	PYTHONBREAKPOINT="pudb.set_trace" uv run pytest -vv
 
+### Run the project
+run: lint
+	uv run hier --version
+	@echo ""
+	@echo "================================================================================"
+	@echo ""
+	uv run hier --help
+	@for ext in json toml xml yaml; do \
+		echo ""; \
+		echo "================================================================================"; \
+		echo "samples/kens_books.$$ext"; \
+		uv run hier samples/kens_books.$$ext; \
+	done
