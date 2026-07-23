@@ -57,8 +57,10 @@ run: lint
 	@echo ""
 	uv run hier --help
 	@for ext in json toml xml yaml; do \
+		sample=samples/kens_books.$$ext; \
 		echo ""; \
 		echo "================================================================================"; \
-		echo "samples/kens_books.$$ext"; \
-		uv run hier samples/kens_books.$$ext; \
+		echo ""; \
+		echo "$$sample"; \
+		uv run hier $$sample; \
 	done

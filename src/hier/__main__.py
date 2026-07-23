@@ -16,7 +16,7 @@ import xml.etree.ElementTree as ET
 
 import yaml
 
-from . import print_tree
+from . import print_hier
 
 CLI_NAME = "hier"
 
@@ -40,7 +40,7 @@ def main():
 
     path = pathlib.Path(options.path)
     if path.is_dir():
-        print_tree(path)
+        print_hier(path)
         return
 
     parsers = {
@@ -56,7 +56,7 @@ def main():
 
     with open(options.path, "rb") as stream:
         data = parse(stream)
-    print_tree(data)
+    print_hier(data)
 
 
 if __name__ == "__main__":

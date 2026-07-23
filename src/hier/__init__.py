@@ -4,11 +4,11 @@ import xml.etree.ElementTree as ET
 
 
 @functools.singledispatch
-def print_tree(data, prefix: str = ""):
+def print_hier(data, prefix: str = ""):
     raise NotImplementedError(f"Not implemented for type {type(data)}: {data}")
 
 
-@print_tree.register
+@print_hier.register
 def _(data: list, prefix: str = ""):
     count = len(data)
 
@@ -19,12 +19,12 @@ def _(data: list, prefix: str = ""):
         if isinstance(entry, (list, dict)):
             print(f"{prefix}{connector}[{i}]")
             extension = "    " if is_last else "│   "
-            print_tree(entry, prefix + extension)
+            print_hier(entry, prefix + extension)
         else:
             print(f"{prefix}{connector}[{i}]={entry!r}")
 
 
-@print_tree.register
+@print_hier.register
 def _(data: dict, prefix: str = ""):
     count = len(data)
 
@@ -35,7 +35,7 @@ def _(data: dict, prefix: str = ""):
         if isinstance(value, (list, dict)):
             print(f"{prefix}{connector}{key}")
             extension = "    " if is_last else "│   "
-            print_tree(value, prefix + extension)
+            print_hier(value, prefix + extension)
         else:
             print(f"{prefix}{connector}{key}={value!r}")
 
@@ -53,15 +53,15 @@ def format_node(node: ET.Element):
     return out
 
 
-@print_tree.register
+@print_hier.register
 def _(data: ET.ElementTree, prefix: str = ""):
     root = data.getroot()
     assert root is not None
     print(f"{prefix}{format_node(root)}")
-    print_tree(root)
+    print_hier(root)
 
 
-@print_tree.register
+@print_hier.register
 def _(data: ET.Element, prefix: str = ""):
     nodes = list(data)
     count = len(nodes)
@@ -71,10 +71,10 @@ def _(data: ET.Element, prefix: str = ""):
         connector = "└── " if is_last else "├── "
         extension = "    " if is_last else "│   "
         print(f"{prefix}{connector}{format_node(node)}")
-        print_tree(node, prefix + extension)
+        print_hier(node, prefix + extension)
 
 
-@print_tree.register
+@print_hier.register
 def _(data: pathlib.Path, prefix: str = ""):
     entries = sorted(data.iterdir(), key=lambda p: p.name)
     count = len(entries)
@@ -86,4 +86,4 @@ def _(data: pathlib.Path, prefix: str = ""):
 
         if entry.is_dir():
             extension = "    " if is_last else "│   "
-            print_tree(entry, prefix + extension)
+            print_hier(entry, prefix + extension)
