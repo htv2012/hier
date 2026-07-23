@@ -175,3 +175,6 @@ etc/ipython/history.sqlite
 etc/ipython/log
 etc/ipython/pid
 etc/lab/workspaces
+
+# vim
+*.swp

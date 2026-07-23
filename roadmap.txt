@@ -1,0 +1,7 @@
+- add tests
+- add help for the CLI
+- rename print_tree to print_hier
+- add ability to print to file
+- add ability to return a string
+- publish to pypi
+

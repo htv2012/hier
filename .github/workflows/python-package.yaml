@@ -46,13 +46,13 @@ jobs:
 
       - name: Ensure Code Are Formatted
         run: |
-          uv run ruff format --check
-          uv run ruff check --select I .
+          uv run ruff format --check src test
+          uv run ruff check --select I src test
 
       - name: Static Analysis
         run: |
-          uv run ruff check .
-          uv run ty check src tests
+          uv run ruff check src test
+          uv run ty check src test
 
       - name: Run Unit Tests
         run: |
