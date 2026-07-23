@@ -1,6 +1,6 @@
 [project]
 name = "hier"
-version = "1.2.0"
+version = "1.2.1"
 description = "Display data in hierarchical format"
 readme = "README.md"
 authors = [
