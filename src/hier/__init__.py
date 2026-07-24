@@ -17,12 +17,6 @@ def get_iterator(data):
     raise TypeError(f"cannot handle data type {data.__class__.__name__} {data=}")
 
 
-def get_child(entry):
-    if isinstance(entry, tuple):
-        return entry[1]  # dict
-    return entry
-
-
 def is_container(entry) -> bool:
     if isinstance(entry, ET.Element):
         return list(entry) != []
@@ -86,10 +80,12 @@ def _hier(data, prefix: str = "", file: Optional[TextIO] = None):
         is_last = i == count - 1
         connector = "└── " if is_last else "├── "
 
-        child = get_child(entry)
+        child = entry[1] if isinstance(data, dict) else entry
         container = is_container(child)
+
         formatted_node = fmt_node(i, entry, container)
         print(f"{prefix}{connector}{formatted_node}", file=file)
+
         if container:
             extension = "    " if is_last else "│   "
             _hier(child, prefix + extension)
