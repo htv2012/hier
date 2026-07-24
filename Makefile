@@ -15,7 +15,7 @@ all: test run
 
 ### Edit files
 edit:
-	gvim -p Makefile pyproject.toml *.txt .github/workflows/*.yaml samples/* src/hier/*.py
+	gvim -p src/hier/*.py
 
 ### Clean up generated files
 clean:
