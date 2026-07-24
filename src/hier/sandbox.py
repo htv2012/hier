@@ -1,7 +1,7 @@
 import pathlib
 import xml.etree.ElementTree as ET
 
-from hier import hier
+from hier import print_hier
 
 
 def element_tree_iterator(data):
@@ -35,4 +35,4 @@ for obj in objects:
     print("# =========================================================================")
     print(f"# {obj.__class__.__name__}")
     print("# =========================================================================")
-    hier(obj)
+    print_hier(obj)

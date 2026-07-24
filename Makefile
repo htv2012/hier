@@ -11,7 +11,7 @@
 	test \
 
 ### Default target(s)
-all: sandbox
+all: test run
 
 sandbox: lint
 	uv run src/hier/sandbox.py
@@ -59,6 +59,10 @@ run: lint
 	@echo "================================================================================"
 	@echo ""
 	uv run hier --help
+	@echo ""
+	@echo "================================================================================"
+	@echo ""
+	uv run hier src
 	@for sample in samples/*; do \
 		echo ""; \
 		echo "================================================================================"; \
