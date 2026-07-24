@@ -1,4 +1,3 @@
-import contextlib
 import pathlib
 import xml.etree.ElementTree as ET
 from typing import Optional, TextIO
@@ -30,9 +29,7 @@ def is_container(entry) -> bool:
     elif isinstance(entry, (list, dict)):
         return True
     elif isinstance(entry, pathlib.Path):
-        with contextlib.suppress(NotADirectoryError):
-            return list(entry.iterdir()) != []
-        return False
+        return entry.is_dir()
     return False
 
 
@@ -81,8 +78,8 @@ def print_hier(data, prefix: str = "", file: Optional[TextIO] = None):
 
 
 def _hier(data, prefix: str = "", file: Optional[TextIO] = None):
-    iterator = get_iterator(data)
-    children = list(iterator(data))
+    iterate = get_iterator(data)
+    children = list(iterate(data))
     count = len(children)
 
     for i, entry in enumerate(children):
