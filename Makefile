@@ -15,7 +15,7 @@ all: test run
 
 ### Edit files
 edit:
-	gvim -p Makefile pyproject.toml *.txt .github/workflows/*.yaml samples/* src/hier/*.py
+	gvim -p src/hier/*.py
 
 ### Clean up generated files
 clean:
@@ -56,8 +56,7 @@ run: lint
 	@echo "================================================================================"
 	@echo ""
 	uv run hier --help
-	@for ext in json toml xml yaml; do \
-		sample=samples/kens_books.$$ext; \
+	@for sample in samples/*; do \
 		echo ""; \
 		echo "================================================================================"; \
 		echo ""; \
