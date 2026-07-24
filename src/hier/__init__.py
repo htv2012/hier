@@ -1,90 +1,91 @@
-import functools
 import pathlib
 import xml.etree.ElementTree as ET
 from typing import Optional, TextIO
 
 
-@functools.singledispatch
-def print_hier(data, prefix: str = "", file: Optional[TextIO] = None):
-    raise NotImplementedError(f"Not implemented for type {type(data)}: {data}")
+def get_iterator(data):
+    if isinstance(data, list):
+        return list
+    elif isinstance(data, dict):
+        return dict.items
+    elif isinstance(data, pathlib.Path):
+        return pathlib.Path.iterdir
+    elif isinstance(data, ET.Element):
+        return list
+    elif isinstance(data, ET.ElementTree):
+        return lambda d: list(d.getroot())
+    raise TypeError(f"cannot handle data type {data.__class__.__name__} {data=}")
 
 
-@print_hier.register
-def _(data: list, prefix: str = "", file: Optional[TextIO] = None):
-    count = len(data)
+def is_container(entry) -> bool:
+    if isinstance(entry, ET.Element):
+        return list(entry) != []
+    elif isinstance(entry, (list, dict)):
+        return True
+    elif isinstance(entry, pathlib.Path):
+        return entry.is_dir()
+    return False
 
-    for i, entry in enumerate(data):
-        is_last = i == count - 1
-        connector = "└── " if is_last else "├── "
 
-        if isinstance(entry, (list, dict)):
-            print(f"{prefix}{connector}[{i}]", file=file)
-            extension = "    " if is_last else "│   "
-            print_hier(entry, prefix + extension)
+def fmt_root(data):
+    if isinstance(data, pathlib.Path):
+        return str(data)
+    elif isinstance(data, ET.ElementTree):
+        root = data.getroot()
+        return root.tag
+    return ""
+
+
+def fmt_node(index, entry, container: bool) -> str:
+    if isinstance(entry, tuple) and len(entry) == 2:
+        name, value = entry
+        if container:
+            return str(name)
+        return f"{name}={value!r}"
+    elif isinstance(entry, ET.Element):
+        text = (entry.text or "").strip()
+        attributes = ", ".join(f"{k}={v!r}" for k, v in entry.items())
+        if attributes:
+            attributes = f"  # {attributes}"
+
+        if text:
+            out = f"{entry.tag}={text!r}{attributes}"
         else:
-            print(f"{prefix}{connector}[{i}]={entry!r}", file=file)
+            out = f"{entry.tag}{attributes}"
+        return out
+    elif isinstance(entry, pathlib.Path):
+        return entry.name
 
-
-@print_hier.register
-def _(data: dict, prefix: str = "", file: Optional[TextIO] = None):
-    count = len(data)
-
-    for i, (key, value) in enumerate(data.items()):
-        is_last = i == count - 1
-        connector = "└── " if is_last else "├── "
-
-        if isinstance(value, (list, dict)):
-            print(f"{prefix}{connector}{key}", file=file)
-            extension = "    " if is_last else "│   "
-            print_hier(value, prefix + extension)
-        else:
-            print(f"{prefix}{connector}{key}={value!r}", file=file)
-
-
-def format_node(node: ET.Element, file: Optional[TextIO] = None):
-    text = (node.text or "").strip()
-    attributes = ", ".join(f"{k}={v!r}" for k, v in node.items())
-    if attributes:
-        attributes = f"  # {attributes}"
-
-    if text:
-        out = f"{node.tag}={text!r}{attributes}"
+    # must be a list entry if gets this far
+    if container:
+        return f"[{index}]"
     else:
-        out = f"{node.tag}{attributes}"
-    return out
+        return f"[{index}]={entry}"
 
 
-@print_hier.register
-def _(data: ET.ElementTree, prefix: str = "", file: Optional[TextIO] = None):
-    root = data.getroot()
-    assert root is not None
-    print(f"{prefix}{format_node(root)}", file=file)
-    print_hier(root)
+def print_hier(data, prefix: str = "", file: Optional[TextIO] = None):
+    # print just the root and let _hier handle the children
+    root = fmt_root(data)
+    if root:
+        print(f"{prefix}{root}", file=file)
+    _hier(data, prefix, file)
 
 
-@print_hier.register
-def _(data: ET.Element, prefix: str = "", file: Optional[TextIO] = None):
-    nodes = list(data)
-    count = len(nodes)
+def _hier(data, prefix: str = "", file: Optional[TextIO] = None):
+    iterate = get_iterator(data)
+    children = list(iterate(data))
+    count = len(children)
 
-    for i, node in enumerate(nodes):
+    for i, entry in enumerate(children):
         is_last = i == count - 1
         connector = "└── " if is_last else "├── "
-        extension = "    " if is_last else "│   "
-        print(f"{prefix}{connector}{format_node(node)}", file=file)
-        print_hier(node, prefix + extension)
 
+        child = entry[1] if isinstance(data, dict) else entry
+        container = is_container(child)
 
-@print_hier.register
-def _(data: pathlib.Path, prefix: str = "", file: Optional[TextIO] = None):
-    entries = sorted(data.iterdir(), key=lambda p: p.name)
-    count = len(entries)
+        formatted_node = fmt_node(i, entry, container)
+        print(f"{prefix}{connector}{formatted_node}", file=file)
 
-    for i, entry in enumerate(entries):
-        is_last = i == count - 1
-        connector = "└── " if is_last else "├── "
-        print(f"{prefix}{connector}{entry.name}", file=file)
-
-        if entry.is_dir():
+        if container:
             extension = "    " if is_last else "│   "
-            print_hier(entry, prefix + extension)
+            _hier(child, prefix + extension)

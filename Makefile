@@ -13,6 +13,9 @@
 ### Default target(s)
 all: test run
 
+sandbox: lint
+	uv run src/hier/sandbox.py
+
 ### Edit files
 edit:
 	gvim -p src/hier/*.py
@@ -56,6 +59,10 @@ run: lint
 	@echo "================================================================================"
 	@echo ""
 	uv run hier --help
+	@echo ""
+	@echo "================================================================================"
+	@echo ""
+	uv run hier src
 	@for sample in samples/*; do \
 		echo ""; \
 		echo "================================================================================"; \
