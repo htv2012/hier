@@ -1,4 +1,5 @@
 - add tests
+- add docs
 - add ability to return a string
 - publish to pypi
 

@@ -4,11 +4,6 @@ import xml.etree.ElementTree as ET
 from typing import Optional, TextIO
 
 
-def element_tree_iterator(data):
-    root = data.getroot()
-    return list(root)
-
-
 def get_iterator(data):
     if isinstance(data, list):
         return list
@@ -19,17 +14,8 @@ def get_iterator(data):
     elif isinstance(data, ET.Element):
         return list
     elif isinstance(data, ET.ElementTree):
-        return element_tree_iterator
-    raise TypeError(f"cannot handle data type {data.__class__.__name__}")
-
-
-def fmt_root(data):
-    if isinstance(data, pathlib.Path):
-        return str(data)
-    elif isinstance(data, ET.ElementTree):
-        root = data.getroot()
-        return root.tag
-    return ""
+        return lambda d: list(d.getroot())
+    raise TypeError(f"cannot handle data type {data.__class__.__name__} {data=}")
 
 
 def get_child(entry):
@@ -48,6 +34,15 @@ def is_container(entry) -> bool:
             return list(entry.iterdir()) != []
         return False
     return False
+
+
+def fmt_root(data):
+    if isinstance(data, pathlib.Path):
+        return str(data)
+    elif isinstance(data, ET.ElementTree):
+        root = data.getroot()
+        return root.tag
+    return ""
 
 
 def fmt_node(index, entry, container: bool) -> str:
