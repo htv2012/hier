@@ -11,7 +11,10 @@
 	test \
 
 ### Default target(s)
-all: test run
+all: sandbox
+
+sandbox: lint
+	uv run src/hier/sandbox.py
 
 ### Edit files
 edit:

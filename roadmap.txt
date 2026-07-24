@@ -1,6 +1,5 @@
 - add tests
 - remove duplicate code
-- add ability to print to file
 - add ability to return a string
 - publish to pypi
 
